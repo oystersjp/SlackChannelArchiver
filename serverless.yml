@@ -1,6 +1,7 @@
 service: SlackChannelArchiver
 provider:
   name: aws
+  timeout: 30 # seconds
   runtime: python3.6
   stage:  ${opt:stage, self:custom.defaultStage}
   region: ${opt:region, self:custom.defaultRegion}
@@ -24,7 +25,7 @@ functions:
   fnc:
     handler: main.handler
     events:
-      - schedule: cron(0 3 * * 1) # UTC 03:00 ( JST 12:00 ) / Monday
+      - schedule: cron(0 3 * * ? *) ## cron(0 3 ? * MON *) # UTC 03:00 ( JST 12:00 ) / Monday
     environment:
       ${self:custom.otherfile.environment.${self:provider.stage}}
 plugins:
