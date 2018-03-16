@@ -9,49 +9,45 @@ print('Loading function... ')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 class PostJson(object):
     def __init__(self):
-        self.BOT_TOKEN =  os.environ['BOT_TOKEN']
-        self.OAUTH_TOKEN = os.environ['OAUTH_TOKEN']
+        #self.BOT_TOKEN =  os.environ['BOT_TOKEN']
+        #self.OAUTH_TOKEN = os.environ['OAUTH_TOKEN']
         self.BOT_MESSAGE = os.environ['BOT_MESSAGE']
         self.BOT_ICON = os.environ['BOT_ICON']
-        self.BOT_NAME =os.environ['BOT_NAME']
+        self.BOT_NAME = os.environ['BOT_NAME']
         self.LEGACY_TOKEN = os.environ['LEGACY_TOKEN']
+
     def headers(self):
         return {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer {0}'.format( self.BOT_TOKEN)
+            'Authorization': 'Bearer {0}'.format(self.LEGACY_TOKEN)
         }
+
     def data_list(self):
-        return {
-            'token': self.OAUTH_TOKEN,
-            'exclude_archived': 'true'
-        }
-    def data_hist(self,channel):
-        return {
-                'token': self.OAUTH_TOKEN,
-                'channel': channel,
-                'count': 1
-            }
+        return {'token': self.LEGACY_TOKEN, 'exclude_archived': 'true'}
+
+    def data_hist(self, channel):
+        return {'token': self.LEGACY_TOKEN, 'channel': channel, 'count': 1}
+
     def data_message(self, channel):
         return {
-            'token': self.OAUTH_TOKEN,
+            'token': self.LEGACY_TOKEN,
             'channel': channel,
             'text': self.BOT_MESSAGE,
             'username': self.BOT_NAME,
             'icon_emoji': self.BOT_ICON
         }
+
     def headers_archive(self):
         return {
             'Content-Type': 'application/json; charset=UTF-8',
-            'Authorization': 'Bearer {0}'.format( self.LEGACY_TOKEN)
-        }
-    def data_archive(self, channel):
-        return {
-            'token': self.LEGACY_TOKEN,
-            'channel': channel
+            'Authorization': 'Bearer {0}'.format(self.LEGACY_TOKEN)
         }
 
+    def data_archive(self, channel):
+        return {'token': self.LEGACY_TOKEN, 'channel': channel}
 
 
 def handler(event, context):
@@ -62,27 +58,36 @@ def handler(event, context):
     url = 'https://slack.com/api/channels.list'
     post_head = PostJson().headers()
     post_body = PostJson().data_list()
-    req = urllib.request.Request(url,data=json.dumps(post_body).encode('utf-8'), method='POST', headers=post_head)
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(post_body).encode('utf-8'),
+        method='POST',
+        headers=post_head)
     res = urllib.request.urlopen(req)
     logger.info('post result: %s', res.msg)
     channels = json.loads(res.read().decode('utf8'))
 
     # get channels info / require scope :channels:history
     for channel in channels.get('channels'):
-        url = "https://slack.com/api/channels.history" # does not support application/json
+        logger.info('checl channel: %s ', channel.get('name', ''))
+        url = "https://slack.com/api/channels.history"  # does not support application/json
         post_body = PostJson().data_hist(channel.get('id'))
-        req = urllib.request.Request(url, urllib.parse.urlencode(post_body).encode('utf-8'))
+        req = urllib.request.Request(
+            url,
+            urllib.parse.urlencode(post_body).encode('utf-8'))
         res = urllib.request.urlopen(req)
         channelhist = json.loads(res.read().decode('utf-8'))
         #print(channelhist)
         messages = channelhist.get('messages')
-        ts = messages[0].get('ts','1000000000') # epoch 2001/9/9 10:46:40
+        message = messages.pop(0) if messages else {}
+        ts = message.get('ts', '1000000000')  # epoch 2001/9/9 10:46:40
         ts_datetime = datetime.fromtimestamp(float(ts))
         now_datetime = datetime.now()
-        diff_datetime = now_datetime - ts_datetime 
+        diff_datetime = now_datetime - ts_datetime
         # check old channels
-        if ( int(diff_datetime.days) > int( ARCHIVE_AFTER_DAYS) ):
-            logger.info('target channel to archive: %s',  channel.get('name',''))
+        if (int(diff_datetime.days) > int(ARCHIVE_AFTER_DAYS)):
+            logger.info('target channel to archive: %s', channel.get(
+                'name', ''))
             # message to target channel / require scope : chat:write:user
             post_data = PostJson().data_message(channel.get('id'))
             url = 'https://slack.com/api/chat.postMessage'
@@ -106,12 +111,6 @@ def handler(event, context):
             logger.info('archive result: %s', res.msg)
             #load = json.loads(res.read().decode('utf8'))
             #print (load)
-            return 'ok' # archive 1 channel and exit fnc, comment-out if you want archive every old channel
-
+            return 'ok'  # archive 1 channel and exit function, comment-out if you want archive every old channel
 
     return 'ok'
-
-
-#if __name__ == '__main__':
-#   handler('','')
-
