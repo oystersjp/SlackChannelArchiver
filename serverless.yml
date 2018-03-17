@@ -24,7 +24,7 @@ functions:
   fnc:
     handler: main.handler
     events:
-      - schedule: cron(0 3 * * ? *) ## cron(0 3 ? * MON *) # UTC 03:00 ( JST 12:00 ) / Monday
+      - schedule: cron(0 3 ? * 2#1 *) # Invoke at UTC3:00(JST12:00) the first Monday of each month
     environment:
       ${self:custom.otherfile.environment.${self:provider.stage}}
 plugins:
