@@ -16,8 +16,7 @@ custom:
       prd: ${file(./enviroment_prd.yml)}
   alerts: # alert plugin
     stages:
-      - dev
-      - prd
+      - ${opt:stage, self:custom.defaultStage}
     alarms:
       - functionErrors
       - functionThrottles
