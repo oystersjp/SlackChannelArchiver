@@ -45,7 +45,7 @@ functions:
 # 🤔 Anything Else
 I wrote article about this function.
 
-[古いSlackチャンネルを自動でアーカイブする機能を作りました - Qiita](https://qiita.com/saitotak/items/6f84de5218b71831ce2b)
+[古い Slack チャンネルを自動でアーカイブする機能を作りました - Qiita](https://qiita.com/saitotak/items/6f84de5218b71831ce2b)
 
 # 🐑 Author
 [saitotak](https://qiita.com/saitotak)
