@@ -12,8 +12,8 @@ custom:
   defaultProfile: default
   otherfile:
     environment:
-      dev: ${file(./enviroment_dev.yml)}
-      prd: ${file(./enviroment_prd.yml)}
+      dev: ${file(./environment_dev.yml)}
+      prd: ${file(./environment_prd.yml)}
   alerts: # alert plugin
     stages:
       - ${opt:stage, self:custom.defaultStage}
@@ -24,7 +24,8 @@ functions:
   fnc:
     handler: main.handler
     events:
-      - schedule: cron(0 3 ? * 2#1 *) # Invoke at UTC3:00(JST12:00) the first Monday of each month
+      - schedule: cron(0 3 * * ? *) 
+      ## cron(0 3 ? * 2#1 *) # Invoke at UTC3:00(JST12:00) the first Monday of each month
     environment:
       ${self:custom.otherfile.environment.${self:provider.stage}}
 plugins:

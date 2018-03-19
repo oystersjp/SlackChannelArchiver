@@ -13,7 +13,7 @@ LEGACY TOKEN needs to be create manually, but AWS side automates environment con
 ## Requirement
 - AWS Account
 - Serverless Framework
-- [serverless-plugin-aws-alerts](https://serverless.com/blog/serverless-ops-metrics/)
+- [serverless-plugin-aws-alerts](https://serverless.com/blog/serverless-ops-metrics/) (optional)
 - Slack Account
 
 ## Installation
@@ -24,8 +24,8 @@ LEGACY TOKEN needs to be create manually, but AWS side automates environment con
 $ git clone https://github.com/saitota/SlackChannelArchiver.git
 ```
 
-4. Modify enviroment_dev.yml 's two TOKEN to your token.
-``` enviroment_dev.yml
+4. Modify environment_dev.yml 's two TOKEN to your token.
+``` environment_dev.yml
 LEGACY_TOKEN: 'xoxp-000000000000-000000000000-000000000000-0x0x0x0x0x0x0x0x0x0x0x0x0x0x0x0x'
 ```
 
