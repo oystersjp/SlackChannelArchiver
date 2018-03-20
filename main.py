@@ -18,19 +18,22 @@ class PostJson(object):
         self.BOT_NAME = os.environ['BOT_NAME']
         self.BOT_ICON = os.environ['BOT_ICON']
         self.BOT_MESSAGE = os.environ['BOT_MESSAGE']
-
     def headers(self):
         return {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer {0}'.format(self.LEGACY_TOKEN)
         }
-
     def data_list(self):
-        return {'token': self.LEGACY_TOKEN, 'exclude_archived': 'true'}
-
+        return {
+            'token': self.LEGACY_TOKEN, 
+            'exclude_archived': True
+        }
     def data_hist(self, channel):
-        return {'token': self.LEGACY_TOKEN, 'channel': channel, 'count': 1}
-
+        return {
+            'token': self.LEGACY_TOKEN, 
+            'channel': channel, 
+            'count': 1
+        }
     def data_message(self, channel):
         return {
             'token': self.LEGACY_TOKEN,
@@ -39,13 +42,11 @@ class PostJson(object):
             'username': self.BOT_NAME,
             'icon_emoji': self.BOT_ICON
         }
-
     def headers_archive(self):
         return {
             'Content-Type': 'application/json; charset=UTF-8',
             'Authorization': 'Bearer {0}'.format(self.LEGACY_TOKEN)
         }
-
     def data_archive(self, channel):
         return {'token': self.LEGACY_TOKEN, 'channel': channel}
 
@@ -80,14 +81,15 @@ def handler(event, context):
         # get timestamp of latest message
         messages = channelhist.get('messages')
         message = messages.pop(0) if messages else {}
-        ts = message.get('ts', '1000000000')  # epoch 2001/9/9 10:46:40 if blank
+        ts = message.get('ts',
+                         '1000000000')  # epoch 2001/9/9 10:46:40 if blank
         ts_datetime = datetime.fromtimestamp(float(ts))
         now_datetime = datetime.now()
         diff_datetime = now_datetime - ts_datetime
         # check old channels
-        if (int(diff_datetime.days) > int(ARCHIVE_AFTER_DAYS)):
-            logger.info('target channel to archive: %s', channel.get(
-                'name', ''))
+        if ((channel.get('is_archived', True) == False) and # exclude_archived Flag does not work well...
+                (int(diff_datetime.days) > int(ARCHIVE_AFTER_DAYS))):
+            logger.info('target channel to archive: %s', channel.get('name', ''))
             # message to target channel / require scope : chat:write:user
             post_data = PostJson().data_message(channel.get('id'))
             url = 'https://slack.com/api/chat.postMessage'
