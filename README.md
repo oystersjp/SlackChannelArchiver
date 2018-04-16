@@ -40,7 +40,7 @@ endpoints:
 functions:
   fnc: SlackChannelArchiver-dev-fnc
 ```
-6. Done! Wait a time to archive. (12:00 JST is the default)
+6. Done! Wait a time to archive. (12:00 JST  is the default)
 
 # 🤔 Anything Else
 I wrote article about this function.
