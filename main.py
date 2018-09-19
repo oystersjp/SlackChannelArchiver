@@ -70,7 +70,7 @@ def handler(event, context):
 
     # get channels info / require scope :channels:history
     for channel in channels.get('channels'):
-        logger.info('check channel: %s ', channel.get('name', ''))
+        #logger.info('check channel: %s ', channel.get('name', ''))
         url = "https://slack.com/api/channels.history"  # does not support application/json
         post_body = PostJson().data_hist(channel.get('id'))
         req = urllib.request.Request(
@@ -86,6 +86,7 @@ def handler(event, context):
         ts_datetime = datetime.fromtimestamp(float(ts))
         now_datetime = datetime.now()
         diff_datetime = now_datetime - ts_datetime
+        logger.info('Channel:%s is_archived:%s / ts_datetime:%s now_datetime:%s diff_datetime:%s ARCHIVE_AFTER_DAYS:%s', channel.get('name', ''), str(channel.get('is_archived', True)), str(ts_datetime), str(now_datetime), str(diff_datetime.days), str(ARCHIVE_AFTER_DAYS) )
         # check old channels
         if ((channel.get('is_archived', True) == False) and # exclude_archived Flag does not work well...
                 (int(diff_datetime.days) > int(ARCHIVE_AFTER_DAYS))):
