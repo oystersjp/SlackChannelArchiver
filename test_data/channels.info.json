@@ -1,0 +1,44 @@
+{
+    "ok": true,
+    "channel": {
+        "id": "CB7H8U5T9",
+        "name": "channel-name",
+        "is_channel": true,
+        "created": 1528856546,
+        "is_archived": false,
+        "is_general": false,
+        "unlinked": 0,
+        "creator": "UXXXXXXXX",
+        "name_normalized": "channel-name",
+        "is_shared": false,
+        "is_org_shared": false,
+        "is_member": true,
+        "is_private": false,
+        "is_mpim": false,
+        "last_read": "1535718452.000100",
+        "latest": {
+            "user": "UXXXXXXXX",
+            "text": "<@UXXXXXXXX> has joined the channel",
+            "type": "message",
+            "subtype": "channel_join",
+            "ts": "1536048420.000200"
+        },
+        "unread_count": 1,
+        "unread_count_display": 0,
+        "members": [
+            "UXXXXXXXX",
+            "UXXXXXXXX"
+        ],
+        "topic": {
+            "value": "foo",
+            "creator": "UXXXXXXXX",
+            "last_set": 1528859485
+        },
+        "purpose": {
+            "value": "bar",
+            "creator": "UXXXXXXXX",
+            "last_set": 1528856547
+        },
+        "previous_names": []
+    }
+}
