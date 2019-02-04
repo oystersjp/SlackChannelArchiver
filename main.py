@@ -71,18 +71,18 @@ def handler(event, context):
     # get channels info / require scope :channels:history
     for channel in channels.get('channels'):
         #logger.info('check channel: %s ', channel.get('name', ''))
-        url = "https://slack.com/api/channels.info"  # does not support application/json
+        url = "https://slack.com/api/channels.history"  # does not support application/json
         post_body = PostJson().data_hist(channel.get('id'))
         req = urllib.request.Request(
             url,
             urllib.parse.urlencode(post_body).encode('utf-8'))
         res = urllib.request.urlopen(req)
-        channelinfo = json.loads(res.read().decode('utf-8'))
+        channelhist = json.loads(res.read().decode('utf-8'))
         # get timestamp of latest message
-        message = channelinfo.get('channel',{}).get('latest',{})
+        messages = channelhist.get('messages')
+        message = messages.pop(0) if messages else {}
         ts = message.get('ts',
-                         '3000000000')  # epoch 2065/1/24 if blank
-
+                         '1000000000')  # epoch 2001/9/9 10:46:40 if blank
         ts_datetime = datetime.fromtimestamp(float(ts))
         now_datetime = datetime.now()
         diff_datetime = now_datetime - ts_datetime
